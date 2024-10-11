@@ -27,7 +27,7 @@
         </member>
         <member name="T:Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.MultipartFormData`1">
             <summary>
-            Wrapper for sending json with image in multipart/form-data
+            Wrapper for sending json with file in multipart/form-data
             </summary>
             <typeparam name="TJsonPart"></typeparam>
         </member>
@@ -66,7 +66,7 @@
         </member>
         <member name="T:Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.MultipartRequiredFormData`1">
             <summary>
-            Wrapper for sending json with REQUIRED image in multipart/form-data.
+            Wrapper for sending json with REQUIRED file in multipart/form-data.
             </summary>
             <typeparam name="TJsonPart"></typeparam>
         </member>

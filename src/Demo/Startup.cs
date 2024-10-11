@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Demo.Models.Products;
 using FluentValidation.AspNetCore;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
@@ -7,11 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Extensions;
-using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations;
 
 namespace Demo {
 	public class Startup {
@@ -23,19 +21,11 @@ namespace Demo {
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services) {
-			// ===== System.Text.Json =====
-			// services.AddControllers()
-			// 	.AddJsonOptions(options => {
-			// 		options.JsonSerializerOptions.WriteIndented = true;
-			// 		options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-			// 	});
-
-			// ===== JSON.Net- =====
 			services.AddControllers()
-			        .AddNewtonsoftJson(options => {
-				        options.SerializerSettings.Converters.Add(new StringEnumConverter());
-				        options.SerializerSettings.Formatting = Formatting.Indented;
-			        })
+					.AddJsonOptions(options => {
+						options.JsonSerializerOptions.WriteIndented = true;
+						options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+					})
 			        .AddFluentValidation(f => {
 				        f.RegisterValidatorsFromAssemblyContaining<ProductValidator>();
 				        // Important! Without this it won't work automatically
@@ -45,7 +35,7 @@ namespace Demo {
 				        f.LocalizationEnabled = false;
 			        });
 
-			services.AddJsonMultipartFormDataSupport(JsonSerializerChoice.Newtonsoft);
+			services.AddJsonMultipartFormDataSupport();
 			services.AddSwaggerExamplesFromAssemblyOf<ProductExamples>();
 			services.AddSwaggerGen(o => {
 				o.SwaggerDoc("v1", new OpenApiInfo {

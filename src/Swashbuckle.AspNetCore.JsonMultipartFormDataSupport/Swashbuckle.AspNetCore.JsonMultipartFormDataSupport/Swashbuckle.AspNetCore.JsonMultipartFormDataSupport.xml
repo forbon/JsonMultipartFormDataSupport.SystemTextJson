@@ -40,7 +40,7 @@
             Aggregates form fields in Swagger to one JSON field and add example.
             </summary>
         </member>
-        <member name="M:Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations.MultiPartJsonOperationFilter.#ctor(System.IServiceProvider,Microsoft.Extensions.Options.IOptions{Microsoft.AspNetCore.Mvc.JsonOptions},Microsoft.Extensions.Options.IOptions{Microsoft.AspNetCore.Mvc.MvcNewtonsoftJsonOptions},Microsoft.Extensions.Options.IOptions{Swashbuckle.AspNetCore.SwaggerGen.SwaggerGeneratorOptions})">
+        <member name="M:Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations.MultiPartJsonOperationFilter.#ctor(System.IServiceProvider,Microsoft.Extensions.Options.IOptions{Microsoft.AspNetCore.Mvc.JsonOptions},Microsoft.Extensions.Options.IOptions{Swashbuckle.AspNetCore.SwaggerGen.SwaggerGeneratorOptions})">
             <summary>
             Creates <see cref="T:Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations.MultiPartJsonOperationFilter"/>
             </summary>
@@ -56,7 +56,7 @@
         </member>
         <member name="T:Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Models.MultipartFormData`1">
             <summary>
-            Wrapper for sending json with image in multipart/form-data
+            Wrapper for sending json with file in multipart/form-data
             </summary>
             <typeparam name="TJsonPart"></typeparam>
         </member>
@@ -72,7 +72,7 @@
         </member>
         <member name="T:Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Models.MultipartRequiredFormData`1">
             <summary>
-            Wrapper for sending json with REQUIRED image in multipart/form-data.
+            Wrapper for sending json with REQUIRED file in multipart/form-data.
             </summary>
             <typeparam name="TJsonPart"></typeparam>
         </member>

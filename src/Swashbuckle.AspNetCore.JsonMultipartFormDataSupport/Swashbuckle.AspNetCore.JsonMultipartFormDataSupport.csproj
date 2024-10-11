@@ -12,14 +12,13 @@
 	  <FileVersion>0.0.0.0</FileVersion>
 	  <RepositoryType>git</RepositoryType>
 	  <PackageVersion>1.9.0</PackageVersion>
-	  <TargetFramework>net6.0</TargetFramework>
+	  <TargetFramework>net8.0</TargetFramework>
 	  <IsPackable>true</IsPackable>
+	  <LangVersion>default</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.7" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.3.2" />
   </ItemGroup>

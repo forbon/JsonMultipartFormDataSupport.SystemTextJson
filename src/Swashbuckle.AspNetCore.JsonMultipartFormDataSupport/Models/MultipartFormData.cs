@@ -3,7 +3,7 @@ using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Attributes;
 
 namespace Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Models {
 	/// <summary>
-	/// Wrapper for sending json with image in multipart/form-data
+	/// Wrapper for sending json with file in multipart/form-data
 	/// </summary>
 	/// <typeparam name="TJsonPart"></typeparam>
 	public class MultipartFormData<TJsonPart> {

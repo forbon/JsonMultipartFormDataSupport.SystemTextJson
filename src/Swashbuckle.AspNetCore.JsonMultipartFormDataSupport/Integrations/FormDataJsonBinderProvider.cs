@@ -10,25 +10,14 @@ namespace Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations {
 	/// <summary>
 	/// Looks for field with <see cref="FromJsonAttribute"/> and use <see cref="JsonModelBinder"/> for binder.
 	/// </summary>
-	public class FormDataJsonBinderProvider : IModelBinderProvider {
-		private readonly IOptions<JsonOptions> _jsonOptions;
-		private readonly IOptions<MvcNewtonsoftJsonOptions> _newtonSoftJsonOptions;
-
-		public FormDataJsonBinderProvider(IOptions<JsonOptions> jsonOptions) {
-			_jsonOptions = jsonOptions;
-		}
-
-
-		public FormDataJsonBinderProvider(IOptions<MvcNewtonsoftJsonOptions> newtonSoftJsonOptions) {
-			_newtonSoftJsonOptions = newtonSoftJsonOptions;
-		}
-
+	public class FormDataJsonBinderProvider(IOptions<JsonOptions> jsonOptions) : IModelBinderProvider
+	{
 		/// <inheritdoc />
 		public IModelBinder GetBinder(ModelBinderProviderContext context) {
-			if (context == null) throw new ArgumentNullException(nameof(context));
+            ArgumentNullException.ThrowIfNull(context);
 
-			// Do not use this provider for binding simple values
-			if (!context.Metadata.IsComplexType) return null;
+            // Do not use this provider for binding simple values
+            if (!context.Metadata.IsComplexType) return null;
 
 			// Do not use this provider if the binding target is not a property
 			var propName = context.Metadata.PropertyName;
@@ -43,12 +32,7 @@ namespace Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations {
 			if (propInfo.GetCustomAttribute<FromJsonAttribute>() == null) return null;
 
 			// All criteria met; use the FormDataJsonBinder
-			if (_jsonOptions != null)
-				return new JsonModelBinder(_jsonOptions);
-			else if (_newtonSoftJsonOptions != null)
-				return new JsonModelBinder(_newtonSoftJsonOptions);
-			else
-				return new JsonModelBinder();
+			return jsonOptions != null ? new JsonModelBinder(jsonOptions) : new JsonModelBinder();
 		}
 	}
 }

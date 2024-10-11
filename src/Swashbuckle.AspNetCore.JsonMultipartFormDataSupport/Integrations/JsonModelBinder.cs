@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations {
@@ -14,7 +13,6 @@ namespace Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations {
 	/// </summary>
 	public class JsonModelBinder : IModelBinder {
 		private readonly IOptions<JsonOptions> _jsonOptions;
-		private readonly IOptions<MvcNewtonsoftJsonOptions> _newtonsoftJsonOptions;
 
 		public JsonModelBinder() { }
 
@@ -22,26 +20,16 @@ namespace Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations {
 			_jsonOptions = jsonOptions;
 		}
 
-		public JsonModelBinder(IOptions<MvcNewtonsoftJsonOptions> newtonsoftJsonOptions) {
-			_newtonsoftJsonOptions = newtonsoftJsonOptions;
-		}
-
 		/// <inheritdoc />
 		public async Task BindModelAsync(ModelBindingContext bindingContext) {
-			if (bindingContext == null) {
-				throw new ArgumentNullException(nameof(bindingContext));
-			}
+            ArgumentNullException.ThrowIfNull(bindingContext);
 
-			string modelBindingKey;
-			if (bindingContext.IsTopLevelObject) {
-				modelBindingKey = bindingContext.BinderModelName;
-			}
-			else {
-				modelBindingKey = bindingContext.ModelName;
-			}
+            var modelBindingKey = bindingContext.IsTopLevelObject
+	            ? bindingContext.BinderModelName
+	            : bindingContext.ModelName;
 
-			// Check the value sent in
-			var valueProviderResult = await this.GetValueProvidedResult(bindingContext);
+            // Check the value sent in
+            var valueProviderResult = await this.GetValueProvidedResult(bindingContext);
 			if (valueProviderResult != ValueProviderResult.None) {
 				bindingContext.ModelState.SetModelValue(bindingContext.ModelName, valueProviderResult);
 
@@ -49,17 +37,7 @@ namespace Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations {
 				var valueAsString = valueProviderResult.FirstValue;
 
 				try {
-					object result;
-					if (_jsonOptions != null) {
-						result = DeserializeUsingSystemSerializer(bindingContext, valueAsString);
-					}
-					else if (_newtonsoftJsonOptions != null) {
-						result = DeserializeUsingJsonNet(bindingContext, valueAsString);
-					}
-					else {
-						result = DeserializeUsingSystemSerializer(bindingContext, valueAsString);
-					}
-
+					var	result = DeserializeUsingSystemSerializer(bindingContext, valueAsString);
 					bindingContext.Result = ModelBindingResult.Success(result);
 				}
 				catch (Exception e) {
@@ -71,11 +49,6 @@ namespace Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations {
 		private object DeserializeUsingSystemSerializer(ModelBindingContext bindingContext, string valueAsString) {
 			return JsonSerializer.Deserialize(valueAsString, bindingContext.ModelType,
 				_jsonOptions?.Value?.JsonSerializerOptions ?? new JsonSerializerOptions());
-		}
-
-		private object DeserializeUsingJsonNet(ModelBindingContext bindingContext, string valueAsString) {
-			return JsonConvert.DeserializeObject(valueAsString, bindingContext.ModelType,
-				_newtonsoftJsonOptions.Value.SerializerSettings);
 		}
 
         private async Task<ValueProviderResult> GetValueProvidedResult(ModelBindingContext bindingContext) {

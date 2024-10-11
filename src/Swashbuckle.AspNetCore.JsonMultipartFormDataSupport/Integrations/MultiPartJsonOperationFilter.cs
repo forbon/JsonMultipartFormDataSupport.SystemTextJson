@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Attributes;
 using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Extensions;
@@ -21,18 +20,15 @@ namespace Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations {
 	public class MultiPartJsonOperationFilter : IOperationFilter {
 		private readonly IServiceProvider _serviceProvider;
 		private readonly IOptions<JsonOptions> _jsonOptions;
-		private readonly IOptions<MvcNewtonsoftJsonOptions> _newtonsoftJsonOption;
 		private readonly IOptions<SwaggerGeneratorOptions> _generatorOptions;
 
 		/// <summary>
 		/// Creates <see cref="MultiPartJsonOperationFilter"/>
 		/// </summary>
 		public MultiPartJsonOperationFilter(IServiceProvider serviceProvider, IOptions<JsonOptions> jsonOptions,
-		                                    IOptions<MvcNewtonsoftJsonOptions> newtonsoftJsonOption,
 		                                    IOptions<SwaggerGeneratorOptions> generatorOptions) {
 			_serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 			_jsonOptions = jsonOptions;
-			_newtonsoftJsonOption = newtonsoftJsonOption;
 			_generatorOptions = generatorOptions;
 		}
 
@@ -102,7 +98,6 @@ namespace Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations {
 		}
 
 		private static void AddDescription(OpenApiSchema openApiSchema, string schemaDisplayName) {
-			openApiSchema.Description += $"\n See {schemaDisplayName} model.";
 		}
 
 		private static void AddEncoding(OpenApiMediaType mediaType, PropertyInfo propertyInfo) {
@@ -121,10 +116,8 @@ namespace Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations {
 			if (example == null) return;
 			string json;
 
-			if (JsonMultipartFormDataOptions.JsonSerializerChoice == JsonSerializerChoice.SystemText)
+			if (_jsonOptions?.Value?.JsonSerializerOptions != null)
 				json = JsonSerializer.Serialize(example, _jsonOptions.Value.JsonSerializerOptions);
-			else if (JsonMultipartFormDataOptions.JsonSerializerChoice == JsonSerializerChoice.Newtonsoft)
-				json = JsonConvert.SerializeObject(example, _newtonsoftJsonOption.Value.SerializerSettings);
 			else
 				json = JsonSerializer.Serialize(example);
 			openApiSchema.Example = new OpenApiString(json);
